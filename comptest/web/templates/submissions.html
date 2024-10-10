@@ -1,0 +1,36 @@
+{% extends "page.html" %}
+{% block head %}
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet"
+          href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" />
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/relativeTime.js"></script>
+{% endblock head %}
+{% block body %}
+    <div class="container">
+        <h1>My Submissions</h1>
+    </div>
+    <div class="container">
+        <table class="table table-striped table-sm">
+            <thead>
+                <tr>
+                    <th scope="col">Last Updated</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Result</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sub in submissions %}
+                    <tr>
+                        <td>{{ sub.last_updated }}</td>
+                        <td>{{ sub.status }}</td>
+                        <td>{{ sub.result }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock body %}

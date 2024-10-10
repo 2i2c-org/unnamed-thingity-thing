@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import default, pages, teams
+from .views import default, pages, submissions, teams
 
 urlpatterns = [
     path("upload", default.upload, name="upload"),
@@ -12,5 +12,6 @@ urlpatterns = [
     path("page/<slug:slug>", pages.view, name="page-view"),
     path("file/<slug:slug>", pages.content_file, name="content-file"),
     path("leaderboard", default.leaderboard, name="leaderboard"),
+    path("submissions", submissions.list, name="submissions-list"),
     path("", pages.home, name="home"),
 ]
