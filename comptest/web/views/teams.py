@@ -1,10 +1,10 @@
-from django import forms
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
+from ..forms import AddMemberForm, TeamForm
 from ..models import Team, TeamMembership
 
 
@@ -17,17 +17,13 @@ def list(request: HttpRequest) -> HttpResponse:
     return render(request, "teams/list.html", {"memberships": memberships})
 
 
-class TeamForm(forms.Form):
-    name = forms.CharField(max_length=1024)
-
-
 @login_required
 def create(request: HttpRequest) -> HttpResponse:
     """
     Create a new team with current user as admin
     """
     if request.method == "POST":
-        form = TeamForm(request.POST)
+        form = TeamForm(data=request.POST)
         if form.is_valid():
             team = Team()
             team.name = form.cleaned_data["name"]
@@ -38,9 +34,11 @@ def create(request: HttpRequest) -> HttpResponse:
             membership.team = team
             membership.is_admin = True
             membership.save()
-            return HttpResponseRedirect(reverse("teams-view", args=(team.id,)))
+
+            return HttpResponseRedirect(reverse("teams-view", args=[team.id]))
     else:
         form = TeamForm()
+
     return render(request, "teams/create.html", {"form": form})
 
 
@@ -72,11 +70,6 @@ def view(request: HttpRequest, id: int) -> HttpResponse:
     )
 
 
-class AddMemberForm(forms.Form):
-    username = forms.CharField(max_length=1024)
-    is_admin = forms.BooleanField(required=False)
-
-
 @login_required
 def add_member(request: HttpRequest, id: int) -> HttpRequest:
     try:
@@ -85,18 +78,29 @@ def add_member(request: HttpRequest, id: int) -> HttpRequest:
         raise Http404("The requested team does not exist")
 
     # FIXME: Validate that we are admin on the team so we can add people
+    # user = TeamMembership.objects.filter(team_id=id)
+    # print(user)
+
     if request.method == "POST":
         form = AddMemberForm(request.POST)
         if form.is_valid():
-            # FIXME: Handle missing users
+            # Handle missing users
+            try:
+                user = User.objects.filter(username=form.cleaned_data["username"]).get()
+            except User.DoesNotExist:
+                raise Http404("The requested user does not exist")
+
             # FIXME: Handle an 'invitation acceptance' flow for users
-            user = User.objects.filter(username=form.cleaned_data["username"]).get()
+
             membership = TeamMembership()
             membership.user = user
             membership.team = team
             membership.is_admin = form.cleaned_data["is_admin"]
             membership.save()
             return HttpResponseRedirect(reverse("teams-view", args=(team.id,)))
+        else:
+            print("error")
     else:
         form = AddMemberForm()
+        print("test")
     return render(request, "teams/add-member.html", {"form": form, "team": team})

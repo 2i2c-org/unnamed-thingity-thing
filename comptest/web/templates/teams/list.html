@@ -1,15 +1,44 @@
 {% extends "page.html" %}
 {% block body %}
-    <div class="container">
-        <h2>List of Teams you are a part of</h2>
-        <a href="{% url 'teams-create' %}" class="btn btn-secondary">Create a new team</a>
-        <ul>
-            {% for m in memberships %}
-                <li>
-                    <a href="{% url 'teams-view' m.team.id %}">{{ m.team.name }}</a>
-                    {% if m.is_admin %}<span>admin</span>{% endif %}
-                </li>
-            {% endfor %}
-        </ul>
+    <div class="container py-2">
+        <div class="row py-2">
+            <div class="col py-2"></div>
+            <h2>My Teams</h2>
+        </div>
+    </div>
+    <div class="container py-2">
+        {% if memberships %}
+            <div class="row py-2">
+                <div class="col">
+                    <a href="{% url 'teams-create' %}"
+                       class="btn btn-secondary mt-2 float-end">Create a team</a>
+                </div>
+            </div>
+            <div class="row py-2">
+                <table class="table table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col">Team Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for m in memberships %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'teams-view' m.team.id %}">{{ m.team.name }}</a>
+                                    {% if m.is_admin %}<span>(you are an admin)</span>{% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="row py-2">
+                <div class="col">
+                    <a href="{% url 'teams-create' %}" class="btn btn-secondary mt-2">Create a team</a>
+                </div>
+            </div>
+        {% endif %}
     </div>
 {% endblock body %}

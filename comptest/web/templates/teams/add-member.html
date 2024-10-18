@@ -1,15 +1,14 @@
 {% extends "page.html" %}
+{% load crispy_forms_tags %}
 {% block body %}
-    <div class="container">
-        <h1>Add someone to team {{ team.name }}</h1>
-        <form class="form"
-              action="{% url 'teams-add-member' team.id %}"
-              method="post"
-              enctype="multipart/form-data">
-            {% csrf_token %} {{ form }}
-            <input class="form-control btn btn-primary mt-2"
-                   type="submit"
-                   value="Submit" />
-        </form>
+    <div class="container py-2">
+        <div class="row py-2">
+            <div class="col py-2">
+                <h1>Add member to team {{ team.name }}</h1>
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="col py-2">{% crispy form %}</div>
+        </div>
     </div>
 {% endblock body %}
