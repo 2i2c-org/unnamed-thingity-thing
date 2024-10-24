@@ -2,10 +2,10 @@ FROM python:3.12.5-slim-bullseye
 
 RUN pip3 install gunicorn
 
-RUN mkdir /opt/unnamed-thingity-thing
+RUN mkdir /opt/frx-challenges
 
-COPY . /opt/unnamed-thingity-thing
+COPY . /opt/frx-challenges
 
-WORKDIR /opt/unnamed-thingity-thing
+WORKDIR /opt/frx-challenges
 
 RUN pip3 install -r requirements.txt

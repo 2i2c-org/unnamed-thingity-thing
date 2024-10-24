@@ -23,7 +23,7 @@ on:
       - "**"
 
 jobs:
-  # Packages the Helm chart, and pushes it to 2i2c-org/unnamed-thingity-thing@gh-pages.
+  # Packages the Helm chart, and pushes it to 2i2c-org/frx-challenges@gh-pages.
   #
   publish:
     runs-on: ubuntu-22.04
@@ -53,7 +53,7 @@ jobs:
           ref = "${{ github.event.ref }}"
           publishing = ""
           if (
-              repo == "2i2c-org/unnamed-thingity-thing"
+              repo == "2i2c-org/frx-challenges"
               and event == "push"
               and (
                   ref.startswith("refs/tags/")

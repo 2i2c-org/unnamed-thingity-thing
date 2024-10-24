@@ -2,9 +2,9 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "unnamed.fullname" . }}
+  name: {{ include "frx-challenges.fullname" . }}
   labels:
-    {{- include "unnamed.labels" . | nindent 4 }}
+    {{- include "frx-challenges.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- . | toYaml | nindent 4 }}
@@ -21,7 +21,7 @@ spec:
             pathType: {{ $.Values.ingress.pathType }}
             backend:
               service:
-                name: {{ include "unnamed.fullname" $ }}
+                name: {{ include "frx-challenges.fullname" $ }}
                 port:
                   number: {{ $.Values.service.port }}
       {{- if $host }}

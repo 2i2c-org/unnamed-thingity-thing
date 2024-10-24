@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "unnamed.fullname" . }}
+  name: {{ include "frx-challenges.fullname" . }}
   labels:
-    {{- include "unnamed.labels" . | nindent 4 }}
+    {{- include "frx-challenges.labels" . | nindent 4 }}
 spec:
   strategy:
     # We have a PVC that can be only bound to one place, so needs to Recreate
@@ -11,7 +11,7 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "unnamed.selectorLabels" . | nindent 6 }}
+      {{- include "frx-challenges.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
@@ -22,13 +22,13 @@ spec:
         {{- . | nindent 8 | toYaml }}
         {{- end }}
       labels:
-        {{- include "unnamed.selectorLabels" . | nindent 8 }}
+        {{- include "frx-challenges.selectorLabels" . | nindent 8 }}
     spec:
       initContainers:
         - name: db-migrate
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          workingDir: /opt/unnamed-thingity-thing/comptest
+          workingDir: /opt/frx-challenges/comptest
           command:
             - python
             - manage.py
@@ -39,12 +39,12 @@ spec:
             - name: storage
               mountPath: /opt/state
             - name: django-yamlconf
-              mountPath: /opt/unnamed-thingity-thing/comptest/comptest.yaml
+              mountPath: /opt/frx-challenges/comptest/comptest.yaml
               subPath: comptest.yaml
         - name: collect-static
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          workingDir: /opt/unnamed-thingity-thing/comptest
+          workingDir: /opt/frx-challenges/comptest
           command:
             - python
             - manage.py
@@ -54,14 +54,14 @@ spec:
             runAsUser: 0
           volumeMounts:
             - name: django-yamlconf
-              mountPath: /opt/unnamed-thingity-thing/comptest/comptest.yaml
+              mountPath: /opt/frx-challenges/comptest/comptest.yaml
               subPath: comptest.yaml
             - name: staticfiles
               mountPath: /opt/staticfiles
         - name: admin-add
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          workingDir: /opt/unnamed-thingity-thing/comptest
+          workingDir: /opt/frx-challenges/comptest
           command:
             - python
             - manage.py
@@ -75,7 +75,7 @@ spec:
             - name: storage
               mountPath: /opt/state
             - name: django-yamlconf
-              mountPath: /opt/unnamed-thingity-thing/comptest/comptest.yaml
+              mountPath: /opt/frx-challenges/comptest/comptest.yaml
               subPath: comptest.yaml
         {{ with .Values.extraInitContainers }}
         {{ $extraInitContainers := . }}
@@ -88,7 +88,7 @@ spec:
         - name: django
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          workingDir: /opt/unnamed-thingity-thing/comptest
+          workingDir: /opt/frx-challenges/comptest
           command:
             - gunicorn
             - --bind
@@ -101,7 +101,7 @@ spec:
             - name: storage
               mountPath: /opt/state
             - name: django-yamlconf
-              mountPath: /opt/unnamed-thingity-thing/comptest/comptest.yaml
+              mountPath: /opt/frx-challenges/comptest/comptest.yaml
               subPath: comptest.yaml
         - name: dind
           image: {{ .Values.dind.image.repository }}:{{ .Values.dind.image.tag }}
@@ -123,7 +123,7 @@ spec:
         - name: evaluator
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          workingDir: /opt/unnamed-thingity-thing/comptest
+          workingDir: /opt/frx-challenges/comptest
           command:
             - python
             - manage.py
@@ -134,7 +134,7 @@ spec:
             - name: storage
               mountPath: /opt/state
             - name: django-yamlconf
-              mountPath: /opt/unnamed-thingity-thing/comptest/comptest.yaml
+              mountPath: /opt/frx-challenges/comptest/comptest.yaml
               subPath: comptest.yaml
           env:
             - name: DOCKER_HOST
@@ -160,12 +160,12 @@ spec:
       volumes:
         - name: storage
           persistentVolumeClaim:
-            claimName: {{ include "unnamed.fullname" . }}
+            claimName: {{ include "frx-challenges.fullname" . }}
         - name: staticfiles
           emptyDir: {}
         - name: django-yamlconf
           configMap:
-            name: {{ include "unnamed.fullname" . }}-django-yamlconf
+            name: {{ include "frx-challenges.fullname" . }}-django-yamlconf
         - name: nginx-config
           configMap:
-            name: {{ include "unnamed.fullname" . }}-nginx
+            name: {{ include "frx-challenges.fullname" . }}-nginx

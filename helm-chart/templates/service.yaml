@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "unnamed.fullname" . }}
+  name: {{ include "frx-challenges.fullname" . }}
   labels:
-    {{- include "unnamed.labels" . | nindent 4 }}
+    {{- include "frx-challenges.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -11,4 +11,4 @@ spec:
       port: {{ .Values.service.port }}
       targetPort: {{ .Values.service.port }}
       protocol: TCP
-  selector: {{ include "unnamed.selectorLabels" . | nindent 4 }}
+  selector: {{ include "frx-challenges.selectorLabels" . | nindent 4 }}
